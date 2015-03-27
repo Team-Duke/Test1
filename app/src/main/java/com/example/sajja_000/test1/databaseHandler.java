@@ -43,10 +43,10 @@ public class databaseHandler extends SQLiteOpenHelper {
         db.insert(TABLE_STUDENT, null, values);
         db.close();
     }
-    public void getContact(Student student)
+    public Student getStudent(int id)
     {
         SQLiteDatabase db=getReadableDatabase();
-        Cursor cursor=db.query(TABLE_STUDENT,new String[]{KEY_ID,KEY_FIRSTNAME,KEY_LASTNAME,KEY_ADDRESS},KEY_ID+"=?",new String[]{String.valueOf(1)},null,null,null,null);
+        Cursor cursor=db.query(TABLE_STUDENT,new String[]{KEY_ID,KEY_FIRSTNAME,KEY_LASTNAME,KEY_ADDRESS},KEY_ID+"=?",new String[]{String.valueOf(id)},null,null,null,null);
 
         if (cursor!= null)
             cursor.moveToFirst();
