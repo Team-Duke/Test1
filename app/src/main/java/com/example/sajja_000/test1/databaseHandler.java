@@ -4,6 +4,10 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.view.GestureDetector;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.StringTokenizer;
 
 /**
  * Created by sajja_000 on 27/03/2015.
@@ -37,7 +41,7 @@ public class databaseHandler extends SQLiteOpenHelper {
         SQLiteDatabase db = getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(KEY_FIRSTNAME, student.getFirstName());
-        values.put(KEY_ID, student.getId());
+
         values.put(KEY_LASTNAME, student.getLastName());
         values.put(KEY_ADDRESS, student.getAddress());
         db.insert(TABLE_STUDENT, null, values);
@@ -50,6 +54,59 @@ public class databaseHandler extends SQLiteOpenHelper {
 
         if (cursor!= null)
             cursor.moveToFirst();
-        Student student = new Student(Integer.parseInt(cursor.getString(0)),cursor.getString(1));
+        Student student = new Student(Integer.parseInt(cursor.getString(0)),cursor.getString(1),cursor.getString(2),cursor.getString(3));
+      db.close();
+        cursor.close();
+        return student;
+    }
+    public void deleteStudet(Student student)
+    {
+        SQLiteDatabase db=getWritableDatabase();
+        db.delete(TABLE_STUDENT,KEY_ID +"?",new String[]{String.valueOf(student.getId())});
+        db.close();
+
+    }
+    public int GetStudentCount()
+    {
+      SQLiteDatabase db=getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT* FROM " + TABLE_STUDENT, null);
+        int count=cursor.getCount();
+        cursor.close();
+        db.close();
+        return count;
+    }
+    public int UpdateStudnt(Student student)
+    {
+        SQLiteDatabase db=getWritableDatabase();
+        ContentValues values=new ContentValues();
+        values.put(KEY_FIRSTNAME, student.getFirstName());
+        values.put(KEY_LASTNAME, student.getLastName());
+        values.put(KEY_ADDRESS, student.getAddress());
+
+        int rowsAffected = db.update(TABLE_STUDENT, values, KEY_ID + "=?", new String[] { String.valueOf(student.getId()) });
+        db.close();
+        return rowsAffected;
+
+
+    }
+    public List<Student> getAllStudents()
+    {
+        List<Student> students =new ArrayList<Student>();
+        SQLiteDatabase db=getWritableDatabase();
+        Cursor cursor=db.rawQuery("SELECT * FROM " + TABLE_STUDENT,null);
+
+        if (cursor.moveToFirst())
+        {
+            do
+            {
+                Student student = new Student(Integer.parseInt(cursor.getString(0)),cursor.getString(1),cursor.getString(2),cursor.getString(3));
+
+            }
+            while (cursor.moveToNext());
+
+        }
+        cursor.close();
+        db.close();
+        return students;
     }
 }
